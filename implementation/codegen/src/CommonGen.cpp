@@ -14,5 +14,7 @@ void CommonGen::Init(const std::shared_ptr<BaseNode> &xml_root) {
   code_gens_["common_vector"]->Init(xml_root);
 }
 
-std::string CommonGen::generate() { return std::string(); }
+std::vector<CodeGen::GeneratedCode> CommonGen::Generate() {
+  return std::vector<GeneratedCode>();
+}
 }  // namespace cm_tool

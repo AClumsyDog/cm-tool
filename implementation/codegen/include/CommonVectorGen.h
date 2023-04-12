@@ -17,7 +17,6 @@ class CommonVectorGen : public CommonGen {
 
   void Init(const std::shared_ptr<BaseNode> &xml_root) override;
 
- protected:
-  std::string generate() override;
+  virtual std::vector<GeneratedCode> Generate() override;
 };
 }  // namespace cm_tool

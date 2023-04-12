@@ -13,15 +13,11 @@ void CodeGen::Init(const std::shared_ptr<BaseNode> &xml_root) {
 }
 
 std::vector<CodeGen::GeneratedCode> CodeGen::Generate() {
-  GeneratedCode common_code;
-  common_code.name = "Common";
-  common_code.content = code_gens_["common"]->generate();
+  auto common_code = code_gens_["common"]->Generate()[0];
 
   std::vector<GeneratedCode> codes;
   codes.push_back(std::move(common_code));
 
   return codes;
 }
-
-std::string CodeGen::generate() { return std::string(); }
 }  // namespace cm_tool
