@@ -1,39 +1,24 @@
 #pragma once
 
-#include <map>
-#include <memory>
+#include <boost/property_tree/ptree.hpp>
+#include <functional>
+#include <mutex>
 #include <string>
 
-namespace tinyxml2 {
-
-class XMLElement;
-class XMLDocument;
-}  // namespace tinyxml2
-
+namespace pt = boost::property_tree;
 namespace cm_tool {
 
-class BaseNode;
-template <typename T>
-class DataNode;
-
-enum class XMLP_ret { XML_ERROR, XML_OK, XML_NOK };
-
-class XMLParser {
+class XmlParser {
  public:
-  static XMLP_ret LoadXML(const std::string &filename,
-                          std::unique_ptr<BaseNode> &root);
+  XmlParser();
 
- protected:
-  static XMLP_ret ParseXML(tinyxml2::XMLDocument &xml_doc,
-                           std::unique_ptr<BaseNode> &root);
+  bool Load(const std::string &path);
 
-  static XMLP_ret ParseDataTypes(tinyxml2::XMLElement *xml_root,
-                                 std::unique_ptr<BaseNode> &root);
+  const pt::ptree *GetTree() const;
 
-  static XMLP_ret ParseImplementationDataTypes(tinyxml2::XMLElement *xml_root,
-                                               std::unique_ptr<BaseNode> &root);
-
-  static XMLP_ret ParseDataTypeVector(tinyxml2::XMLElement *xml_root,
-                                      std::unique_ptr<BaseNode> &root);
+ private:
+  bool is_loaded_;
+  mutable std::mutex mutex_;
+  pt::ptree tree_;
 };
 }  // namespace cm_tool

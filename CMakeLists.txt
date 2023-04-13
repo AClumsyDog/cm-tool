@@ -3,7 +3,7 @@ project(cm-tool)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(tinyxml2 CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS filesystem)
 
 # interface
 set(INTERFACE_INCLUDE interface)
@@ -12,20 +12,19 @@ set(INTERFACE_INCLUDE interface)
 set(XMLPARSER_INCLUDE implementation/xmlparser/include)
 set(XMLPARSER_SOURCES
     implementation/xmlparser/src/XmlParser.cpp
-    implementation/xmlparser/src/XmlParserCommon.cpp
 )
 add_library(xmlparser OBJECT ${XMLPARSER_SOURCES})
-target_link_libraries(xmlparser PRIVATE tinyxml2::tinyxml2)
+target_link_libraries(xmlparser PUBLIC Boost::boost Boost::filesystem)
 target_include_directories(xmlparser PUBLIC ${INTERFACE_INCLUDE} ${XMLPARSER_INCLUDE})
 
 # codegen
 set(GEN_INCLUDE implementation/codegen/include)
-set(GEN_SOURCES 
+set(GEN_SOURCES
     implementation/codegen/src/CodeGen.cpp
     implementation/codegen/src/CommonGen.cpp
-    implementation/codegen/src/CommonVectorGen.cpp
 )
 add_library(codegen OBJECT ${GEN_SOURCES})
+target_link_libraries(codegen PUBLIC Boost::boost Boost::filesystem)
 target_include_directories(codegen PUBLIC ${INTERFACE_INCLUDE} ${GEN_INCLUDE})
 
 # app
@@ -33,7 +32,7 @@ set(APP_SOURCES
     app/main.cpp
 )
 add_executable(cm-tool ${APP_SOURCES})
-target_link_libraries(cm-tool PRIVATE codegen xmlparser)
+target_link_libraries(cm-tool PRIVATE xmlparser codegen)
 
 # install
 install (TARGETS cm-tool

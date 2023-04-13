@@ -1,13 +1,14 @@
 #pragma once
 
+#include <boost/property_tree/ptree.hpp>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+namespace pt = boost::property_tree;
 namespace cm_tool {
-
-class BaseNode;
 
 class CodeGen {
  public:
@@ -20,11 +21,16 @@ class CodeGen {
 
   virtual ~CodeGen();
 
-  virtual void Init(const std::shared_ptr<BaseNode> &xml_root);
+  virtual bool Init(const pt::ptree *xml_tree);
 
   virtual std::vector<GeneratedCode> Generate();
 
+  static void StringReplace(std::string &src_str, const std::string &src,
+                            const std::string &rep);
+
  protected:
+  bool is_init_;
+  std::mutex mutex_;
   std::unordered_map<std::string, std::unique_ptr<CodeGen>> code_gens_;
 };
 }  // namespace cm_tool
