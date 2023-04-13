@@ -3,7 +3,7 @@ project(cm-tool)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(Boost 1.81.0 REQUIRED COMPONENTS filesystem)
 
 # interface
 set(INTERFACE_INCLUDE interface)
