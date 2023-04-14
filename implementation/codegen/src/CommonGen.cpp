@@ -35,7 +35,7 @@ bool CommonGen::Init(const pt::ptree *xml_root) {
 
 std::vector<CodeGen::GeneratedCode> CommonGen::Generate() {
   GeneratedCode generated_code;
-  generated_code.name = "common";
+  generated_code.name = module_name_ + "Common.h";
   generated_code.content = src_str_;
 
   StringReplace(generated_code.content, "$(MODULENAME)", module_name_);
