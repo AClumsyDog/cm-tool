@@ -1,13 +1,19 @@
 #include <iostream>
 
 #include "CodeGen.h"
+#include "Options.h"
 #include "XmlParser.h"
 
 using namespace cm_tool;
 
 int main(int argc, char **argv) {
+  Options options;
+  if (!options.Parse(argc, argv)) {
+    return 1;
+  }
+
   XmlParser xml_parser;
-  if (!xml_parser.Load(argv[1])) {
+  if (!xml_parser.Load(options.input_)) {
     return 1;
   }
 

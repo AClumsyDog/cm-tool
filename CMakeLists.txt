@@ -35,6 +35,7 @@ target_include_directories(codegen PUBLIC ${INTERFACE_INCLUDE} ${GEN_INCLUDE})
 # app
 set(APP_SOURCES
     app/main.cpp
+    app/Options.cpp
 )
 add_executable(cm-tool ${APP_SOURCES})
 target_link_libraries(cm-tool PRIVATE xmlparser codegen Boost::boost Boost::program_options)
