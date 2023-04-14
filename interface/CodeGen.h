@@ -25,6 +25,9 @@ class CodeGen {
 
   virtual std::vector<GeneratedCode> Generate();
 
+ protected:
+  static void LoadTpl(const std::string &path, std::string &dst);
+
   static void StringReplace(std::string &src_str, const std::string &src,
                             const std::string &rep);
 

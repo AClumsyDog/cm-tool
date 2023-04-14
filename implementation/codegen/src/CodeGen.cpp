@@ -1,7 +1,11 @@
 #include "CodeGen.h"
 
+#include <boost/filesystem.hpp>
+#include <fstream>
+
 #include "CommonGen.h"
 
+namespace fs = boost::filesystem;
 namespace cm_tool {
 
 CodeGen::CodeGen() : is_init_(false) {}
@@ -32,6 +36,19 @@ std::vector<CodeGen::GeneratedCode> CodeGen::Generate() {
   codes.push_back(std::move(common_code));
 
   return codes;
+}
+
+void CodeGen::LoadTpl(const std::string &path, std::string &dst) {
+  if (!fs::exists(path)) {
+    throw std::runtime_error(path + " does not exist");
+  }
+
+  auto file_size = fs::file_size(path);
+  dst.resize(file_size);
+
+  std::ifstream i_file(path);
+  i_file.read(const_cast<char *>(dst.data()), file_size);
+  i_file.close();
 }
 
 void CodeGen::StringReplace(std::string &src_str, const std::string &src,

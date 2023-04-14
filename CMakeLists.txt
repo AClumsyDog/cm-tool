@@ -27,6 +27,7 @@ set(GEN_INCLUDE implementation/codegen/include)
 set(GEN_SOURCES
     implementation/codegen/src/CodeGen.cpp
     implementation/codegen/src/CommonGen.cpp
+    implementation/codegen/src/DataTypeGen.cpp
 )
 add_library(codegen OBJECT ${GEN_SOURCES})
 target_link_libraries(codegen PRIVATE Boost::boost Boost::filesystem)

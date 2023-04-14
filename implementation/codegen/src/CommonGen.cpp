@@ -1,34 +1,25 @@
 #include "CommonGen.h"
 
 #include <algorithm>
-#include <boost/filesystem.hpp>
 #include <cctype>
-#include <fstream>
+
+#include "DataTypeGen.h"
 
 static const std::string COMMON_H_PATH = "../etc/common_h.tpl";
 
-namespace fs = boost::filesystem;
 namespace cm_tool {
 
-CommonGen::CommonGen() {
-  if (!fs::exists(COMMON_H_PATH)) {
-    throw std::runtime_error(COMMON_H_PATH + " does not exist");
-  }
-
-  auto file_size = fs::file_size(COMMON_H_PATH);
-  src_str_.resize(file_size);
-
-  std::ifstream i_file(COMMON_H_PATH);
-  i_file.read(const_cast<char *>(src_str_.data()), file_size);
-  i_file.close();
-}
+CommonGen::CommonGen() { LoadTpl(COMMON_H_PATH, src_str_); }
 
 CommonGen::~CommonGen() {}
 
-bool CommonGen::Init(const pt::ptree *xml_root) {
-  module_name_ = getModuleName(xml_root);
+bool CommonGen::Init(const pt::ptree *xml_tree) {
+  code_gens_["data_type"] = std::make_unique<DataTypeGen>();
+  if (!code_gens_["data_type"]->Init(xml_tree)) {
+    return false;
+  }
 
-  auto code = src_str_;
+  module_name_ = getModuleName(xml_tree);
 
   return true;
 }
@@ -37,6 +28,13 @@ std::vector<CodeGen::GeneratedCode> CommonGen::Generate() {
   GeneratedCode generated_code;
   generated_code.name = module_name_ + "Common.h";
   generated_code.content = src_str_;
+
+  auto data_type_codes = code_gens_["data_type"]->Generate();
+  for (const auto &code : data_type_codes) {
+    if (code.name == "definecontent") {
+      StringReplace(generated_code.content, "$(DEFINECONTENTS)", code.content);
+    }
+  }
 
   StringReplace(generated_code.content, "$(MODULENAME)", module_name_);
 
